@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web1:
+    build: ./web1
+    container_name: nginx_web1
+    hostname: web1  # Zwingt den Container, den lesbaren Namen "web1" zu nutzen
+    volumes:
+      - ./html:/usr/share/nginx/html  # Mountet das neue Host-Verzeichnis
+      - ./logs:/logs
+
+  web2:
+    build: ./web2
+    container_name: nginx_web2
+    hostname: web2  # Zwingt den Container, den lesbaren Namen "web2" zu nutzen
+    volumes:
+      - ./html:/usr/share/nginx/html  # Mountet das gleiche Host-Verzeichnis
+      - ./logs:/logs
+
+  loadbalancer:
+    build: ./loadbalancer
+    container_name: nginx_loadbalancer
+    ports:
+      - "8080:80"
+    volumes:
+      - ./logs:/logs
+    depends_on:
+      - web1
+      - web2
